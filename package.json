@@ -1,0 +1,29 @@
+{
+  "name": "@coderunner/graphql-secure",
+  "description": "Thin layer for a GraphQL API to secure data from excessive fetching",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "author": "Guillaume Coderunner <coderunner2077@gmail.com>",
+  "license": "MIT",
+  "keywords": [
+    "graphql",
+    "security",
+    "access control",
+    "secure data"
+  ],
+  "homepage": "https://github.com/Coderunner2077/GraphQL-Secure.git",
+  "bugs": "https://github.com/Coderunner2077/GraphQL-Secure/issues",
+  "repository": {
+    "url": "https://github.com/Coderunner2077/GraphQL-Secure.git",
+    "type": "git"
+  },
+  "scripts": {
+    "build": "tsc -p .",
+    "prepublish": "tsc"
+  },
+  "devDependencies": {
+    "graphql": "^16.6.0",
+    "typescript": "^4.8.3"
+  }
+}
