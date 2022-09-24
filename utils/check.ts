@@ -1,4 +1,4 @@
-import { ParsedFields } from "types";
+import { ParsedFields } from "../types";
 
 /**
  * Checks whether query fields of a given depth are included in allowed fields, i.e. valid. Returns array of:
@@ -17,7 +17,7 @@ export const checkFields = (acceptedFields: ParsedFields | undefined, queryField
             invalid.push(queryKey);
         else
             for (let querySubfield of queryFields[queryKey])
-                if ((typeof acceptedFields[queryKey] === "string" && acceptedFields[queryKey] !== querySubfield) || (Array.isArray(acceptedFields) && !acceptedFields[queryKey].includes(querySubfield)))
+                if ((typeof acceptedFields[queryKey] === "string" && acceptedFields[queryKey] !== querySubfield) || (Array.isArray(acceptedFields[queryKey]) && !acceptedFields[queryKey].includes(querySubfield)))
                     invalid.push(querySubfield);
 
 
