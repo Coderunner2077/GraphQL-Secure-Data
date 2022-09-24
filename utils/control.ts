@@ -1,7 +1,7 @@
 import { GraphQLResolveInfo } from "graphql";
 import { getRelevantQueries, filterAllowedFields } from "./filter";
 import { parseNextQueries, parseAllowedFields } from "./parse";
-import { ParsedFields, AllowedFields } from "types";
+import { ParsedFields, AllowedFields } from "../types";
 import { checkAllFields } from "./check";
 
 

@@ -1,6 +1,6 @@
 import { GraphQLResolveInfo, SelectionNode } from "graphql";
 import { parseReturnType } from "./parse";
-import { AllowedFields } from "types";
+import { AllowedFields } from "../types";
 
 /**
  * Filters relevant queries among different incoming queries. Only those operations that return restricted

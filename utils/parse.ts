@@ -1,6 +1,6 @@
 import { GraphQLResolveInfo, SelectionNode } from "graphql";
 import { isEmpty } from "./utils";
-import { ParsedFields, AllowedFields } from "types";
+import { ParsedFields, AllowedFields } from "../types";
 
 /**
  * Parses return type of the incoming graphql operation to turn it into a string.
