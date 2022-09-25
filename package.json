@@ -1,5 +1,5 @@
 {
-  "name": "@coderunner/graphql-secure",
+  "name": "graphql-secure-objects",
   "description": "Thin layer for a GraphQL API to secure data from excessive fetching",
   "version": "1.0.0",
   "main": "dist/index.js",
