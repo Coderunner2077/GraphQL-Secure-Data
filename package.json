@@ -1,6 +1,6 @@
 {
-  "name": "@coderunner/graphql-secure",
-  "description": "Thin layer for a GraphQL API to secure data from excessive fetching",
+  "name": "graphql-secure-data",
+  "description": "Thin layer of abstraction for GraphQL Server to secure data from excessive/malicious fetching",
   "version": "1.0.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
