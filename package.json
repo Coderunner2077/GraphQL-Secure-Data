@@ -8,7 +8,9 @@
   "license": "MIT",
   "keywords": [
     "graphql",
-    "security",
+    "permissions",
+    "restrictions",
+    "persisted queries",
     "access control",
     "secure data"
   ],
