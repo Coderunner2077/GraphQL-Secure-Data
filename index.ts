@@ -13,8 +13,8 @@ import { accessControl } from "./utils/control";
  * @returns resolver
  */
 export const secure = (fields: Record<string, string | (string | AllowedFields)[]>) => {
-    return async (resolve: Function, root: any, args: any, ctx: any, info: GraphQLResolveInfo) => {
+    return (resolve: Function, root: any, args: any, ctx: any, info: GraphQLResolveInfo) => {
         accessControl(info, fields);
-        return await resolve(root, args, ctx, info);
+        return resolve(root, args, ctx, info);
     }
 }

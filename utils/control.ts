@@ -1,9 +1,9 @@
-import { GraphQLResolveInfo } from "graphql";
+import { GraphQLError, GraphQLResolveInfo } from "graphql";
 import { getRelevantQueries, filterAllowedFields } from "./filter";
 import { parseNextQueries, parseAllowedFields } from "./parse";
 import { ParsedFields, AllowedFields } from "../types";
 import { checkAllFields } from "./check";
-
+import { QueryValidationError } from "../error";
 
 /**
  * Main function verifying whether a given query, mutation or subscription complies with
@@ -31,7 +31,7 @@ export const accessControl = (info: GraphQLResolveInfo, fields: AllowedFields): 
         let [isValid, invalid, depth]: [boolean, string[], number] = [true, [], 0];
         [isValid, invalid, depth] = checkAllFields(depth, parsedFields, parsedQueries);
 
-        if (!isValid && invalid.length > 0) throw new Error(`Access Control: cannot fetch '${invalid.join(", ")}' at depth ${depth} of ${queryFields.__parent__}`);
+        if (!isValid && invalid.length > 0) throw new QueryValidationError(`Access Control: cannot fetch '${invalid.join(", ")}' at depth ${depth} of ${queryFields.__parent__}`, invalid);
     }
 
     return true;
