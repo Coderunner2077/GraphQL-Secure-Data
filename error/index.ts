@@ -9,5 +9,6 @@ export class QueryValidationError extends GraphQLError {
             code: "QUERY_VALIDATION_FAILED",
             fields
         };
+        this.stack = "Hidden";
     }
 }
