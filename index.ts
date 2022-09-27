@@ -1,7 +1,7 @@
 import { QueryValidationError } from "./error";
 import { GraphQLResolveInfo } from "graphql";
 import { AllowedFields, IMiddlewareFunction } from "./types";
-import { accessControl } from "./utils/control";
+import { accessControl } from "./src/control";
 
 /**
  * Middleware implementing full access control on fields of data types returned by the incoming GraphQL
