@@ -22,7 +22,7 @@
   },
   "scripts": {
     "build": "tsc -p .",
-    "prepublish": "tsc"
+    "prepublish": "tsc -p ."
   },
   "devDependencies": {
     "graphql": "^16.6.0",
