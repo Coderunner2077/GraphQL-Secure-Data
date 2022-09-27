@@ -14,10 +14,10 @@
     "access control",
     "secure data"
   ],
-  "homepage": "https://github.com/Coderunner2077/GraphQL-Secure.git",
-  "bugs": "https://github.com/Coderunner2077/GraphQL-Secure/issues",
+  "homepage": "https://github.com/Coderunner2077/GraphQL-Secure-Data.git",
+  "bugs": "https://github.com/Coderunner2077/GraphQL-Secure-Data/issues",
   "repository": {
-    "url": "https://github.com/Coderunner2077/GraphQL-Secure.git",
+    "url": "https://github.com/Coderunner2077/GraphQL-Secure-Data.git",
     "type": "git"
   },
   "scripts": {
