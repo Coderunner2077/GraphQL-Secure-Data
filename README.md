@@ -4,7 +4,7 @@
 
 # Overview
 
-GraphQL Secure protects your application from excessive and/or malicious data fetching. Using an intuitive restrictions layer, you'll be able to secure your data from unintended queries by specifying the maximum allowed nested fields for your data types. These restrictions are applied to all of the  queries, mutations and subscriptions that return the specified data types.
+GraphQL Secure Data protects your application from excessive and/or malicious data fetching. Using an intuitive restrictions layer, you'll be able to secure your data from unintended queries by specifying the maximum allowed nested fields for your data types. These restrictions are applied to all of the  queries, mutations and subscriptions that return the specified data types.
 
 ## Features
 
@@ -30,61 +30,60 @@ import { secure } from '@coderunner/graphql-secure'
 import { resolvers } from "./resolvers";
 
 const typeDefs = `
-	type Query {
-		getUser: User
-	    getMessage: Message
-		allMessages: [Message]!
-		allUsers: [User]!
-	}
-	type Mutation {
-		addMessage: Message
-	}
-	type User {
-		id: ID!
-		username: String!
-		password: String!
-		messagesSent: [Message]!
-		messagesReceived: [Message]!
-	}
-	type Message {
-		id: ID!
-		content: String!
-		sender: User!
-		receiver: User!
-	}
+  type Query {
+    getUser: User
+    getMessage: Message
+    allMessages: [Message]!
+    allUsers: [User]!
+  }
+  type Mutation {
+    addMessage: Message
+  }
+  type User {
+    id: ID!
+    username: String!
+    password: String!
+    messagesSent: [Message]!
+    messagesReceived: [Message]!
+  }
+  type Message {
+    id: ID!
+    content: String!
+    sender: User!
+    receiver: User!
+  }
 `
-
 // Restrictions
 
 /* Only specify the object types that you want to restrict, and
 fields and nested fields that you want to allow  */
 
 const  restrictions = secure({
-	Message: [
-		"id",
-		"content",
-		{ sender: ["id", "username"	] },
-		{ receiver: ["id", "username"] }
-	],
-	User: [
-		"id",
-		"username",
-		"password",
-		{
-			messagesSent: [
-				"id",
-				"content",
-				{ receiver: "id" }
-			]
-		},
-		{
-			messagesReceived: [
-				"id",
-				"content",
-				{ receiver: "id" }
-			]
-		}
-	]
+  Message: [
+    "id",
+    "content",
+    { sender: ["id", "username"] },
+    { receiver: ["id", "username"] }
+  ],
+  User: [
+    "id",
+    "username",
+    "password",
+    {
+      messagesSent: [
+        "id",
+        "content",
+        { receiver: "id" }
+      ]
+    },
+    {
+      messagesReceived: [
+        "id",
+        "content",
+        { receiver: "id" }
+      ]
+    }
+  ]
 });
 
 const server = new GraphQLServer({
