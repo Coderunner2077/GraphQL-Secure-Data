@@ -28,10 +28,11 @@ export const accessControl = (info: GraphQLResolveInfo, fields: AllowedFields): 
         parsedQueries = parseNextQueries(parsedQueries, queryFields);
         let parsedFields: ParsedFields[] = []
         parsedFields = parseAllowedFields(parsedFields, filteredAllowedFields);
-        let [isValid, invalid, depth]: [boolean, string[], number] = [true, [], 0];
-        [isValid, invalid, depth] = checkAllFields(depth, parsedFields, parsedQueries);
+        let [isValid, invalid, depth, childrenOf]: [boolean, string[], number, string[]] = [true, [], 0, []];
+        [isValid, invalid, depth, childrenOf] = checkAllFields(depth, parsedFields, parsedQueries);
 
-        if (!isValid && invalid.length > 0) throw new QueryValidationError(`Access Control: cannot fetch '${invalid.join(", ")}' at depth ${depth} of ${queryFields.__parent__}`, invalid);
+        if (!isValid && childrenOf.length > 0) throw new Error(`Access Control: cannot fetch subfields of '${childrenOf.join(", ")}' at depth ${depth} in '${queryFields.__parent__}'`);
+        if (!isValid && invalid.length > 0) throw new Error(`Access Control: cannot fetch '${invalid.join(", ")}' at depth ${depth} in '${queryFields.__parent__}'`);
     }
 
     return true;

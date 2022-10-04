@@ -28,20 +28,31 @@ export const parseReturnType = (info: GraphQLResolveInfo): string => {
 export const parseAllowedFields = (parsed: ParsedFields[], fields: AllowedFields): ParsedFields[] => {
     let nextCheck: ParsedFields = {};
     let subfields: AllowedFields = {};
+    let stringField: string | undefined;
     for (const key in fields) {
         nextCheck[key] = [];
-        if (typeof fields[key] === "string") { nextCheck[key] = fields[key] as string; }
-        else
-            for (const subfield of fields[key]) {
-                if (typeof subfield === "string") (nextCheck[key] as string[]).push(subfield);
-                else {
-                    const subKeys = Object.keys(subfield);
-                    for (const subKey of subKeys)
-                        (nextCheck[key] as string[]).push(subKey);
-                    for (const subfieldKey in subfield)
-                        subfields[`${key}:${subfieldKey}`] = subfield[subfieldKey];
-                }
+        stringField = typeof fields[key] === "string" ? fields[key] as string
+            : (fields[key].length === 1 && typeof fields[key][0] === "string" ? fields[key][0] as string : undefined);
+        if (stringField) {
+            if (stringField.match(/^\*\*/)) {
+                nextCheck[key] = "*";
+                subfields[`${key}:*`] = stringField.substring(1);
+            } else
+                nextCheck[key] = stringField;
+            continue;
+        }
+        for (const subfield of fields[key]) {
+            if (typeof subfield === "string") {
+                (nextCheck[key] as string[]).push(subfield)
+                continue;
             }
+            const subKeys = Object.keys(subfield);
+            for (const subKey of subKeys)
+                (nextCheck[key] as string[]).push(subKey);
+            for (const subfieldKey in subfield)
+                subfields[`${key}:${subfieldKey}`] = subfield[subfieldKey];
+
+        }
     }
     parsed.push(nextCheck);
     if (!isEmpty(subfields))

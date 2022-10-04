@@ -10,20 +10,25 @@ import { ParsedFields } from "../types";
  * @returns [boolean, string[]]
  * @internal
  */
-export const checkFields = (acceptedFields: ParsedFields | undefined, queryFields: Record<string, string[]>): [boolean, string[]] => {
+export const checkFields = (acceptedFields: ParsedFields | undefined, queryFields: Record<string, string[]>): [boolean, string[], string[]] => {
     let invalid = [];
+    let childrenOf = [];
     for (let queryKey in queryFields) {
-        if (!acceptedFields || acceptedFields[queryKey] === undefined)
-            invalid.push(queryKey);
-        else
-            for (let querySubfield of queryFields[queryKey])
-                if ((typeof acceptedFields[queryKey] === "string" && acceptedFields[queryKey] !== querySubfield) || (Array.isArray(acceptedFields[queryKey]) && !acceptedFields[queryKey].includes(querySubfield)))
-                    invalid.push(querySubfield);
-
-
+        let wildcardKey = queryKey.replace(/:\w+/gi, ":*");
+        if (!acceptedFields || (acceptedFields[queryKey] === undefined && acceptedFields[wildcardKey] === undefined)) {
+            childrenOf.push(queryKey.substring(queryKey.lastIndexOf(":") + 1));
+            continue;
+        }
+        if (acceptedFields[wildcardKey] !== undefined && (acceptedFields[wildcardKey] === "*" || (Array.isArray(acceptedFields[wildcardKey]) && acceptedFields[wildcardKey].includes("*"))))
+            continue;
+        if (acceptedFields[queryKey] === "*" || (Array.isArray(acceptedFields[queryKey]) && acceptedFields[queryKey].includes("*")))
+            continue;
+        for (let querySubfield of queryFields[queryKey])
+            if ((typeof acceptedFields[queryKey] === "string" && acceptedFields[queryKey] !== querySubfield) || (Array.isArray(acceptedFields[queryKey]) && !acceptedFields[queryKey].includes(querySubfield)))
+                invalid.push(querySubfield);
     }
 
-    return [invalid.length === 0, invalid];
+    return [invalid.length === 0 && childrenOf.length === 0, invalid, childrenOf];
 }
 
 /**
@@ -34,11 +39,11 @@ export const checkFields = (acceptedFields: ParsedFields | undefined, queryField
  * @returns [isValid: boolean, invalidFields: string[], depth: number]
  * @internal
  */
-export const checkAllFields = (depth: number, acceptedFields: ParsedFields[], queryFields: Record<string, string[]>[]): [boolean, string[], number] => {
+export const checkAllFields = (depth: number, acceptedFields: ParsedFields[], queryFields: Record<string, string[]>[]): [boolean, string[], number, string[]] => {
     for (let i = 0; i < queryFields.length; i++) {
         depth++;
-        let [isValid, invalid] = checkFields(acceptedFields[i], queryFields[i]);
-        if (!isValid) return [isValid, invalid, depth];
+        let [isValid, invalid, childrenOf] = checkFields(acceptedFields[i], queryFields[i]);
+        if (!isValid) return [isValid, invalid, depth, childrenOf];
     }
-    return [true, [], depth];
+    return [true, [], depth, []];
 }

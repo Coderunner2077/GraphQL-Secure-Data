@@ -1,5 +1,5 @@
 # GraphQL Secure Data
-> Thin layer of abstraction for GraphQL Server to secure data from excessive/malicious fetching
+> Thin layer of abstraction for GraphQL Server to secure data from excessive/abusive fetching
 
 
 # Overview
@@ -13,6 +13,12 @@ GraphQL Secure Data protects your application from excessive and/or malicious da
 -   💪  **Powerful:**  Applies to all of your queries, mutations and subscriptions
 -   ✔️  **Compatible:**  Works with any GraphQL Schema.
 -   🎯  **Per-Type and Per-Depth:**  Write restrictions for your types and permissions for fields as deep as you'd like (check the example below).
+
+## New Features
+
+Thanks to the use of wildcards, two new features have been added:
+-   ✨  **Depth limit Per-Type:** Allow all fields up to a certain depth for a given type
+-   🚀 **Use of Wildcard Per-Depth :** Allow all non-nested fields at a given depth with a single wildcard (**"*"**)
 
 ## Install
 
@@ -66,9 +72,7 @@ const  restrictions = secure({
     { receiver: ["id", "username"] }
   ],
   User: [
-    "id",
-    "username",
-    "password",
+    "*", // wildcard allowing all direct subfields
     {
       messagesSent: [
         "id",
@@ -80,7 +84,7 @@ const  restrictions = secure({
       messagesReceived: [
         "id",
         "content",
-        { receiver: "id" }
+        { receiver: ["id", "username"] }
       ]
     }
   ]
@@ -115,11 +119,7 @@ schema = applyMiddleware(schema, restrictions)
 // Restricted types AND allowed fields tree type
 export type  AllowedFields = Record<string, string | (string | AllowedFields)[]>
 
-export type IMiddlewareFunction<TSource = any, TContext = any, TArgs = any> =
-    | IMiddlewareWithOptions<TSource, TContext, TArgs>
-    | IMiddlewareResolver<TSource, TContext, TArgs>
-
-declare function secure(fieldsTree: AllowedFields): IMiddlewareFunction
+declare  function  secure(fieldsTree: AllowedFields): IMiddlewareFunction
 ```
 
 ### `secure(fieldsMap?)`
@@ -140,21 +140,52 @@ following :
 -   `String` representing a single field.  For example:   ` secure({ User: "id" })`
 -   `Array of strings` representing multiple fields.
     Example `secure({ User: ["id", "username"] })`
-- `Array of more nested object(s)` containing either of the above.  Example:
-  `secure({ User: [{messagesSent: "id"}, { messagesReceived: ["id"] } ])`
-
-
+-  `Array of more nested object(s)` containing either of the above.  Example:
+   `secure({ User: [{messagesSent: "id"}, { messagesReceived: ["id"] } ])`
 
 >  Naturally you can keep going as far as you'd like in the fields
 >  permissions
-
+>
 >  Note: Any field that you omit at a given depth (starting at 1+) is going to
 >  be  forbidden to be fetched and an error will be thrown indicating which
 >  field could not be fetched.
-
+>
 > Note 2: Any type (specified at the very top of the tree) that you omit is
 > fully allowed to be fetched as it is considered as not requiring any
 > restrictions.
+
+##### Use of wildcards
+
+Any of the strings contained in the nested object can be wildcards. Here are the two use cases of the wildcard:
+
+- Wildcard(s) at the base of a type specifies the depth limit up to which all fields and nested fields are allowed for a given type.
+Example:
+```
+secure({
+  Message: "**", // Depth limit 2: Message fields and subfields allowed
+  User: "***" // Depth limit 3
+})
+```
+- Wildcard at a given depth allows all direct non-nested subfields to be fetched without having to name them all. It doesn't include nested subfields.
+Example:
+```javasript
+secure({
+  User: [
+    "*",    // id, username, password subfields are allowed
+    { messagesSent: "*" },    // id, content subfields are allowed
+    {
+      messagesReceived: [
+        "*",    // id, content subfields are allowed
+        { sender: "*" }  // id, username, password subfields are allowed
+      ]    // receiver NOT allowed
+    }
+  ]
+})
+```
+
+> Note : Use of multiple wildcards to signify allowed depth limit will only work when entered as a unique child at the base of a type field (at the top of the object)
+>
+> Note 2: And for nested fields only single wildcards will have an effect (which is allowing all non-nested subfields at that depth)
 
 ##### Custom Errors
 By default, in case of a forbidden field, an error is thrown, then caught AND
