@@ -1,6 +1,6 @@
 import { QueryValidationError } from "./error";
 import { GraphQLResolveInfo } from "graphql";
-import { AllowedFields, IMiddlewareFunction } from "./types";
+import { AllowedFields, IMiddlewareFunction, IMiddlewareResolver } from "./types";
 import { accessControl } from "./src/control";
 
 /**
@@ -13,13 +13,16 @@ import { accessControl } from "./src/control";
  * @param fieldsTree AllowedFields
  * @returns resolver
  */
-export const secure = (fieldsTree: AllowedFields): IMiddlewareFunction => {
-    return (resolve: Function, root: any, args: any, ctx: any, info: GraphQLResolveInfo): Promise<any> | QueryValidationError => {
-        try {
-            accessControl(info, fieldsTree);
-        } catch (err) {
-            return err as QueryValidationError;
-        }
-        return resolve(root, args, ctx, info);
+
+export const secure = (fieldsTree: AllowedFields): IMiddlewareResolver => {
+    return (resolve: Function, root: any, args: any, ctx: any, info: GraphQLResolveInfo): Promise<any> => {
+        return new Promise((fulfill, reject) => {
+            try {
+                accessControl(info, fieldsTree);
+            } catch (err) {
+                reject(err as QueryValidationError);
+            }
+            fulfill(resolve(root, args, ctx, info));
+        });
     }
 }
