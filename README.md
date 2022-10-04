@@ -4,7 +4,7 @@
 
 # Overview
 
-GraphQL Secure Data protects your application from excessive and/or malicious data fetching. Using an intuitive restrictions layer, you'll be able to secure your data from unintended queries by specifying the maximum allowed nested fields for your data types. These restrictions are applied to all of the  queries, mutations and subscriptions that return the specified data types.
+GraphQL Secure Data protects your application from excessive and/or abusive data fetching. Using an intuitive restrictions layer, you'll be able to secure your data from unintended queries by specifying the maximum allowed nested fields for your data types. These restrictions are applied to all of the  queries, mutations and subscriptions that return the specified data types.
 
 ## Features
 
@@ -16,7 +16,7 @@ GraphQL Secure Data protects your application from excessive and/or malicious da
 
 ## New Features
 
-Thanks to the use of wildcards, two new features have been added:
+By using wildcards, two new features have been added:
 -   ✨  **Depth limit Per-Type:** Allow all fields up to a certain depth for a given type
 -   🚀 **Use of Wildcard Per-Depth :** Allow all non-nested fields at a given depth with a single wildcard (**"*"**)
 
@@ -78,9 +78,7 @@ const  restrictions = secure({
         "id",
         "content",
         { receiver: "id" }
-      ]
-    },
-    {
+      ],
       messagesReceived: [
         "id",
         "content",
@@ -141,7 +139,7 @@ following :
 -   `Array of strings` representing multiple fields.
     Example `secure({ User: ["id", "username"] })`
 -  `Array of more nested object(s)` containing either of the above.  Example:
-   `secure({ User: [{messagesSent: "id"}, { messagesReceived: ["id"] } ])`
+   `secure({ User: [{ messagesSent: "id", messagesReceived: ["id"] } ])`
 
 >  Naturally you can keep going as far as you'd like in the fields
 >  permissions
@@ -183,7 +181,7 @@ secure({
 })
 ```
 
-> Note : Use of multiple wildcards to signify allowed depth limit will only work when entered as a unique child at the base of a type field (at the top of the object)
+> Note : Use of multiple wildcards to signify allowed depth limit will only work when entered as a UNIQUE child at the base of a type field (at the TOP of the object)
 >
 > Note 2: And for nested fields only single wildcards will have an effect (which is allowing all non-nested subfields at that depth)
 
