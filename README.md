@@ -115,36 +115,13 @@ schema = applyMiddleware(schema, restrictions)
 // Restricted types AND allowed fields tree type
 export type  AllowedFields = Record<string, string | (string | AllowedFields)[]>
 
+export type IMiddlewareFunction<TSource = any, TContext = any, TArgs = any> =
+    | IMiddlewareWithOptions<TSource, TContext, TArgs>
+    | IMiddlewareResolver<TSource, TContext, TArgs>
+
 declare function secure(fieldsTree: AllowedFields): IMiddlewareFunction
-
-/* Following types and functions are for internal use,
-and only presented here for better grasp of the api */
-
-// Parsed AllowedFields for a given depth (internal type)
-export type  ParsedFields = Record<string, string | string[]>
-export  type  IMiddlewareFunction = (resolve: Function, root: any, args: any, ctx: any, info: GraphQLResolveInfo) => Promise<any> | QueryValidationError
-// The info object that is being leveraged by this API
-import { GraphQLResolveInfo } from 'graphql'
-
-// Filtering functions
-export function getRelevantQueries(info: GraphQLResolveInfo, fields: AllowedFields): Record<string, SelectionNode[]>[]
-export function getRestrictedTypes(fields: AllowedFields): string[]
-export function filterAllowedFields(info: GraphQLResolveInfo, fields: AllowedFields): AllowedFields
-
-// Parsing functions
-export function parseReturnType(info: GraphQLResolveInfo): string
-export function parseAllowedFields(parsed: ParsedFields[], fields: AllowedFields): ParsedFields[]
-export function parseNextQueries(queries: Record<string, string[]>[], selections: Record<string, SelectionNode[]>): Record<string, string[]>[]
-
-// Checking/Logic functions
-export function checkFields(acceptedFields: ParsedFields | undefined, queryFields: Record<string, string[]>): [boolean, string[]]
-export function checkAllFields(depth: number, acceptedFields: ParsedFields[], queryFields: Record<string, string[]>[]): [boolean, string[], number]
-
-// Main internal Logic function
-export function accessControl(info: GraphQLResolveInfo, fields: AllowedFields): boolean
-
-
 ```
+
 ### `secure(fieldsMap?)`
 
 > Returns a GraphQL Middleware layer from your fields tree object.
