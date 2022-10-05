@@ -23,16 +23,17 @@ By using wildcards, two new features have been added:
 ## Install
 
 ```
-yarn add graphql-secure-data
+yarn add graphql-secure-data graphql-middleware
 ```
 
 ## Example
 ### GraphQL Yoga
 
 ```javascript
-import { GraphQLServer } from 'graphql-yoga'
-import { ContextParameters } from 'graphql-yoga/dist/types'
-import { secure } from '@coderunner/graphql-secure'
+import { createServer } from '@graphql-yoga/node'
+import { applyMiddleware } from 'graphql-middleware'
+import { secure } from 'graphql-secure-data'
+import { makeExecutableSchema } from '@graphql-tools/schema'
 import { resolvers } from "./resolvers";
 
 const typeDefs = `
@@ -59,6 +60,9 @@ const typeDefs = `
     receiver: User!
   }
 `
+// Your schema
+const schema = makeExecutableSchema({ typeDefs, resolvers })
+
 // Restrictions
 
 /* Only specify the object types that you want to restrict, and
@@ -72,7 +76,7 @@ const  restrictions = secure({
     { receiver: ["id", "username"] }
   ],
   User: [
-    "*", // wildcard allowing all direct subfields
+    "*", // wildcard allowing all non-nested subfields
     {
       messagesSent: [
         "id",
@@ -86,27 +90,13 @@ const  restrictions = secure({
       ]
     }
   ]
-});
+})
 
-const server = new GraphQLServer({
-  typeDefs,
-  resolvers,
-  middlewares: [restrictions]
-});
+const server = createServer({
+  schema: applyMiddleware(schema, restrictions),
+})
 
-server.start(() => console.log('Server is running on http://localhost:4000'));
-```
-
-### Others, using  `graphql-middleware`
-```javascript
-// Restrictions...
-
-// Apply permissions middleware with applyMiddleware
-// Giving any schema (instance of GraphQLSchema)
-
-import { applyMiddleware } from 'graphql-middleware'
-// schema definition...
-schema = applyMiddleware(schema, restrictions)
+server.start()
 ```
 
 ## API
@@ -135,11 +125,11 @@ is concerned.
 ##### Constraints
 This parameter requires to enter a nested object containing at each of its depth the
 following :
--   `String` representing a single field.  For example:   ` secure({ User: "id" })`
--   `Array of strings` representing multiple fields.
+-  `String` representing a single field.  For example:   ` secure({ User: "id" })`
+-  `Array of strings` representing multiple fields.
     Example `secure({ User: ["id", "username"] })`
 -  `Array of more nested object(s)` containing either of the above.  Example:
-   `secure({ User: [{ messagesSent: "id", messagesReceived: ["id"] } ])`
+   `secure({ User: [{ messagesSent: "id", messagesReceived: "id" } ])`
 
 >  Naturally you can keep going as far as you'd like in the fields
 >  permissions
@@ -170,8 +160,8 @@ Example:
 secure({
   User: [
     "*",    // id, username, password subfields are allowed
-    { messagesSent: "*" },    // id, content subfields are allowed
     {
+      messagesSent: "*",    // id, content subfields are allowed
       messagesReceived: [
         "*",    // id, content subfields are allowed
         { sender: "*" }  // id, username, password subfields are allowed
