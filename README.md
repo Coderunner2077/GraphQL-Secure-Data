@@ -40,8 +40,8 @@ const typeDefs = `
   type Query {
     getUser: User
     getMessage: Message
-    allMessages: [Message]!
-    allUsers: [User]!
+    allMessages: [Message!]
+    allUsers: [User!]
   }
   type Mutation {
     addMessage: Message
@@ -50,8 +50,8 @@ const typeDefs = `
     id: ID!
     username: String!
     password: String!
-    messagesSent: [Message]!
-    messagesReceived: [Message]!
+    messagesSent: [Message!]
+    messagesReceived: [Message!]
   }
   type Message {
     id: ID!
@@ -182,10 +182,7 @@ queries more data than he was supposed to.
 
 ## Contributing
 
-I'm always looking for people to help me grow  `graphql-secure-data`!
-This module (my first published) can be improved with features like being able
-to explicitly forbid certain query fields, as well as adding a caching system
-especially if `graphql-secure-data` starts to grow in complexity.
+I welcome people willing to help me grow  `graphql-secure-data`!
 If you have an issue, feature request, or pull request, let me know!
 
 ## License
