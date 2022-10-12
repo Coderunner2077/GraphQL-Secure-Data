@@ -1,7 +1,7 @@
 {
   "name": "graphql-secure-data",
   "description": "Thin layer of abstraction for GraphQL Server to secure data from excessive/abusive fetching",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "author": "Guillaume Coderunner <coderunner2077@gmail.com>",
@@ -14,7 +14,7 @@
     "secure data",
     "depth limit"
   ],
-  "homepage": "https://github.com/Coderunner2077/GraphQL-Secure-Data.git",
+  "homepage": "https://github.com/Coderunner2077/GraphQL-Secure-Data#readme",
   "bugs": "https://github.com/Coderunner2077/GraphQL-Secure-Data/issues",
   "repository": {
     "url": "https://github.com/Coderunner2077/GraphQL-Secure-Data.git",
