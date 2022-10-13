@@ -11,7 +11,7 @@ GraphQL Secure Data protects your application from excessive and/or abusive data
 -   😎  **Less is more:**  Small middleware inspired by  [GraphQL Middleware](https://github.com/prismagraphql/graphql-middleware).
 -   ⚡  **Easy to use:**  An intuitive, yet familiar API that you will pick up instantly
 -   💪  **Powerful:**  Applies to all of your queries, mutations and subscriptions
--   ✔️  **Compatible:**  Works with any GraphQL server.
+-   ✔️  **Compatible:**  Works with any GraphQL Server
 -   🎯  **Per-Type and Per-Depth:**  Write restrictions for your types and permissions for fields as deep as you'd like (check the example below).
 
 ## New Features

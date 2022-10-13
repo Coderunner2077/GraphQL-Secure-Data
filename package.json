@@ -1,7 +1,7 @@
 {
   "name": "graphql-secure-data",
   "description": "Thin layer of abstraction for GraphQL Server to secure data from excessive/abusive fetching",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "author": "Guillaume Coderunner <coderunner2077@gmail.com>",
